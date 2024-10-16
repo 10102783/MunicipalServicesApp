@@ -8,17 +8,64 @@ namespace MunicipalServicesApp
     public partial class ReportIssuesForm : Form
     {
         private string mediaFilePath; // Stores the path of the attached media file
+        private ProgressBar progressBar;
+        private Label lblProgressPercentage;
 
         public ReportIssuesForm()
         {
             InitializeComponent();
-            // Attach the Paint event handler here
             lblHeader.Paint += OnLblHeaderPaint;
-            // Start the timer for header animation
             headerAnimationTimer.Start();
+
+            // Initialize Progress Bar
+            InitializeProgressBar();
+            UpdateProgressBar();
+
+            // Attach event handlers for text changes
+            txtLocation.TextChanged += (s, e) => UpdateProgressBar();
+            ddlCategory.SelectedIndexChanged += (s, e) => UpdateProgressBar();
+            rtbDescription.TextChanged += (s, e) => UpdateProgressBar();
         }
 
-        // Handles the click event for the Attach Media button
+        private void InitializeProgressBar()
+        {
+            progressBar = new ProgressBar
+            {
+                Location = new Point(124, 470),
+                Size = new Size(280, 25),
+                Style = ProgressBarStyle.Continuous,
+                ForeColor = Color.FromArgb(76, 175, 80), // Custom color for progress
+                BackColor = Color.LightGray // Background color
+            };
+
+            lblProgressPercentage = new Label
+            {
+                AutoSize = true,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(33, 150, 243),
+                Location = new Point(410, 470),
+                Text = "0%"
+            };
+
+            Controls.Add(progressBar);
+            Controls.Add(lblProgressPercentage);
+        }
+
+        private void UpdateProgressBar()
+        {
+            int filledFields = 0;
+
+            if (!string.IsNullOrWhiteSpace(txtLocation.Text)) filledFields++;
+            if (ddlCategory.SelectedItem != null) filledFields++;
+            if (!string.IsNullOrWhiteSpace(rtbDescription.Text)) filledFields++;
+
+            int totalFields = 3; // Location, Category, Description
+            int progress = (filledFields * 100) / totalFields;
+
+            progressBar.Value = progress;
+            lblProgressPercentage.Text = $"{progress}%";
+        }
+
         private void btnAttachMedia_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -30,12 +77,12 @@ namespace MunicipalServicesApp
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     mediaFilePath = openFileDialog.FileName;
-                    UpdateMediaPreview(); // Update the preview with the selected media
+                    UpdateMediaPreview();
+                    UpdateProgressBar(); // Update progress after attaching media
                 }
             }
         }
 
-        // Updates the media preview display
         private void UpdateMediaPreview()
         {
             if (string.IsNullOrEmpty(mediaFilePath))
@@ -58,7 +105,6 @@ namespace MunicipalServicesApp
             }
         }
 
-        // Handles the click event for the Submit button
         private void btnSubmit_Click(object sender, EventArgs e)
         {
             string location = txtLocation.Text;
@@ -86,16 +132,13 @@ namespace MunicipalServicesApp
             this.Close();
         }
 
-        // Handles the click event for the Back button
         private void btnBack_Click(object sender, EventArgs e)
         {
             this.Close(); // Closes the current form
         }
 
-        // Custom drawing logic
         private void OnLblHeaderPaint(object sender, PaintEventArgs e)
         {
-            // Draw animated border
             var rect = new Rectangle(0, 0, lblHeader.Width - 1, lblHeader.Height - 1);
             using (var pen = new Pen(lblHeader.ForeColor, 3))
             {
@@ -103,10 +146,8 @@ namespace MunicipalServicesApp
             }
         }
 
-        // Timer tick event for header animation
         private void headerAnimationTimer_Tick(object sender, EventArgs e)
         {
-            // Basic animation effect: cyclic border color
             var random = new Random();
             int r = random.Next(0, 256);
             int g = random.Next(0, 256);

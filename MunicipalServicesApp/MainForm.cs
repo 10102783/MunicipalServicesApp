@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing; // For Color
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MunicipalServicesApp
@@ -13,7 +13,6 @@ namespace MunicipalServicesApp
         public MainForm()
         {
             InitializeComponent();
-            // Initialize Exit Button
             InitializeExitButton();
         }
 
@@ -49,7 +48,8 @@ namespace MunicipalServicesApp
 
         private void btnLocalEvents_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Local Events feature is currently unavailable.", "Feature Disabled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var localEventsForm = new LocalEventsForm();
+            LoadForm(localEventsForm);
         }
 
         private void btnServiceRequestStatus_Click(object sender, EventArgs e)
@@ -85,6 +85,7 @@ namespace MunicipalServicesApp
 
         private void btnExit_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("Thank you! See you soon.", "Goodbye", MessageBoxButtons.OK, MessageBoxIcon.Information);
             Application.Exit();
         }
     }

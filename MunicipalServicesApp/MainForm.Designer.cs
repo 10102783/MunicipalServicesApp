@@ -1,12 +1,13 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.ComponentModel;
 using System.Drawing;
-using System;
+using System.Windows.Forms;
 
 namespace MunicipalServicesApp
 {
     partial class MainForm
     {
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
         private Label lblWelcome;
         private Button btnReportIssues;
         private Button btnLocalEvents;
@@ -64,18 +65,18 @@ namespace MunicipalServicesApp
             // 
             // btnLocalEvents
             // 
-            this.btnLocalEvents.Enabled = false;
-            this.btnLocalEvents.BackColor = Color.Gray;
+            this.btnLocalEvents.BackColor = Color.FromArgb(34, 45, 50);
             this.btnLocalEvents.Font = new Font("Arial", 12F);
             this.btnLocalEvents.ForeColor = Color.White;
             this.btnLocalEvents.Location = new Point(13, 135);
             this.btnLocalEvents.Name = "btnLocalEvents";
             this.btnLocalEvents.Size = new Size(333, 62);
             this.btnLocalEvents.TabIndex = 2;
-            this.btnLocalEvents.Text = "Local Events";
+            this.btnLocalEvents.Text = "Local Events And Announcements";
             this.btnLocalEvents.UseVisualStyleBackColor = false;
             this.btnLocalEvents.FlatStyle = FlatStyle.Flat;
             this.btnLocalEvents.FlatAppearance.BorderSize = 0;
+            this.btnLocalEvents.Click += new EventHandler(this.btnLocalEvents_Click);
 
             // 
             // btnServiceRequestStatus
@@ -139,5 +140,3 @@ namespace MunicipalServicesApp
         }
     }
 }
-
-

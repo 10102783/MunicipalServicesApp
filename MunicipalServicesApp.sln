@@ -5,6 +5,11 @@ VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MunicipalServicesApp", "MunicipalServicesApp\MunicipalServicesApp.csproj", "{45182D77-9700-44B2-8587-D46C123EC153}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{357AC052-C3C9-4BBB-B90B-1F045437B130}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Desktop\Read Me File of Municipal Services App.docx = ..\..\..\Desktop\Read Me File of Municipal Services App.docx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
