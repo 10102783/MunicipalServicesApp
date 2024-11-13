@@ -81,8 +81,7 @@ namespace MunicipalServicesApp
             // 
             // btnServiceRequestStatus
             // 
-            this.btnServiceRequestStatus.Enabled = false;
-            this.btnServiceRequestStatus.BackColor = Color.Gray;
+            this.btnServiceRequestStatus.BackColor = Color.FromArgb(34, 45, 50);
             this.btnServiceRequestStatus.Font = new Font("Arial", 12F);
             this.btnServiceRequestStatus.ForeColor = Color.White;
             this.btnServiceRequestStatus.Location = new Point(13, 209);
@@ -93,6 +92,7 @@ namespace MunicipalServicesApp
             this.btnServiceRequestStatus.UseVisualStyleBackColor = false;
             this.btnServiceRequestStatus.FlatStyle = FlatStyle.Flat;
             this.btnServiceRequestStatus.FlatAppearance.BorderSize = 0;
+            this.btnServiceRequestStatus.Click += new EventHandler(this.btnServiceRequestStatus_Click);
 
             // 
             // contentPanel

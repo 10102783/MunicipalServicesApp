@@ -161,10 +161,12 @@ namespace MunicipalServicesApp
             }
         }
 
+        private RecommendationLogic recommendationLogic = new RecommendationLogic(); // Initialize RecommendationLogic
+
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            DateTime selectedDate = dateTimePicker.Value.Date; // Get the selected date
             string searchCategory = comboBoxCategory.SelectedItem?.ToString();
-            DateTime selectedDate = dateTimePicker.Value.Date;
 
             if (string.IsNullOrEmpty(searchCategory))
             {
@@ -186,21 +188,48 @@ namespace MunicipalServicesApp
                 return;
             }
 
+            // Add filtered events to the ListView
             foreach (var ev in filteredEvents)
             {
                 var item = CreateListViewItem(ev.Name, ev.Date, ev.Category, ev.Description);
                 listViewEvents.Items.Add(item);
             }
 
+            // Add filtered announcements to the ListView
             foreach (var ann in filteredAnnouncements)
             {
                 var item = CreateListViewItem(ann.Title, ann.Date, "Announcement", ann.Description);
                 listViewEvents.Items.Add(item);
             }
 
+            // Log user search history
             UpdateUserSearchHistory(searchCategory, filteredEvents);
-            DisplayRecommendations(selectedDate);
+
+            // Display recommendations
+            DisplayRecommendations(selectedDate); // Use selectedDate directly
+
+            // Frequency calculation for pie chart
+            var categoryFrequency = filteredEvents
+                .GroupBy(ev => ev.Category)
+                .ToDictionary(g => g.Key, g => (double)g.Count());
+
+            // Assuming UpdatePieChart does not take any arguments
+            UpdatePieChart(); // Call the method without arguments
+
+            // If UpdatePieChart needs to be updated with the frequency data, you can adjust this line as needed
+            // Example: UpdatePieChart(categoryFrequency);
         }
+
+        // Recommendation logic class to handle user search logs
+        public class RecommendationLogic
+        {
+            public void LogUserSearch(string category, string eventName)
+            {
+                // Implement your logging logic here
+                Console.WriteLine($"User searched for category: {category}, event: {eventName}");
+            }
+        }
+
 
         private void UpdateUserSearchHistory(string searchCategory, IEnumerable<Event> filteredEvents)
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting; // Add this namespace for charting
 
 namespace MunicipalServicesApp
 {
@@ -9,6 +10,7 @@ namespace MunicipalServicesApp
     {
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.ProgressBar progressBarCategories;
+        private System.Windows.Forms.DataVisualization.Charting.Chart pieChart; // Pie chart control
 
         protected override void Dispose(bool disposing)
         {
@@ -36,8 +38,22 @@ namespace MunicipalServicesApp
             this.btnSortByName = new System.Windows.Forms.Button();
             this.columnHeaderRecommendation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.listViewRecommendations = new System.Windows.Forms.ListView();
-            this.progressBarCategories = new System.Windows.Forms.ProgressBar(); // Added ProgressBar
+            this.progressBarCategories = new System.Windows.Forms.ProgressBar();
+            this.pieChart = new System.Windows.Forms.DataVisualization.Charting.Chart(); // Initialize the pie chart
             this.SuspendLayout();
+
+            // Initialize pieChart properties
+            ((System.ComponentModel.ISupportInitialize)(this.pieChart)).BeginInit();
+            this.pieChart.Location = new System.Drawing.Point(825, 15); // Position it to the right of the list view
+            this.pieChart.Size = new System.Drawing.Size(300, 300);
+            this.pieChart.TabIndex = 10;
+            this.pieChart.ChartAreas.Add(new ChartArea("MainArea")); // Add chart area
+            this.pieChart.Series.Add(new Series("Event Categories") // Add series for pie chart
+            {
+                ChartType = SeriesChartType.Pie,
+                IsValueShownAsLabel = true,
+            });
+            ((System.ComponentModel.ISupportInitialize)(this.pieChart)).EndInit();
 
             // listViewEvents
             this.listViewEvents.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -164,33 +180,37 @@ namespace MunicipalServicesApp
             this.btnSortByName.UseVisualStyleBackColor = false;
             this.btnSortByName.Click += new System.EventHandler(this.btnSortByName_Click);
 
-            // columnHeaderRecommendation
-            this.columnHeaderRecommendation.Text = "Recommendation";
-            this.columnHeaderRecommendation.Width = 150;
-
             // listViewRecommendations
             this.listViewRecommendations.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderRecommendation});
             this.listViewRecommendations.FullRowSelect = true;
-            this.listViewRecommendations.GridLines = false; // Removed grid lines
+            this.listViewRecommendations.GridLines = true;
             this.listViewRecommendations.HideSelection = false;
-            this.listViewRecommendations.Location = new System.Drawing.Point(16, 345);
+            this.listViewRecommendations.Location = new System.Drawing.Point(16, 350);
             this.listViewRecommendations.Margin = new System.Windows.Forms.Padding(4);
             this.listViewRecommendations.Name = "listViewRecommendations";
-            this.listViewRecommendations.Size = new System.Drawing.Size(799, 184);
+            this.listViewRecommendations.Size = new System.Drawing.Size(799, 200);
             this.listViewRecommendations.TabIndex = 9;
             this.listViewRecommendations.UseCompatibleStateImageBehavior = false;
             this.listViewRecommendations.View = System.Windows.Forms.View.Details;
 
+            // columnHeaderRecommendation
+            this.columnHeaderRecommendation.Text = "Recommendations";
+            this.columnHeaderRecommendation.Width = 400;
+
             // progressBarCategories
-            this.progressBarCategories.Location = new System.Drawing.Point(16, 536);
-            this.progressBarCategories.Size = new System.Drawing.Size(799, 23);
-            this.Controls.Add(this.progressBarCategories); // Added ProgressBar to Controls
+            this.progressBarCategories.Location = new System.Drawing.Point(16, 560);
+            this.progressBarCategories.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBarCategories.Name = "progressBarCategories";
+            this.progressBarCategories.Size = new System.Drawing.Size(799, 28);
+            this.progressBarCategories.TabIndex = 11;
 
             // LocalEventsForm
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(832, 570);
+            this.ClientSize = new System.Drawing.Size(1150, 600); // Increased height to accommodate the chart
+            this.Controls.Add(this.progressBarCategories);
+            this.Controls.Add(this.pieChart); // Add pie chart to controls
             this.Controls.Add(this.listViewRecommendations);
             this.Controls.Add(this.btnSortByName);
             this.Controls.Add(this.btnSortByCategory);
@@ -218,26 +238,25 @@ namespace MunicipalServicesApp
             int percentage = (int)((selectedCategoryCount / (float)totalEvents) * 100);
             progressBarCategories.Value = percentage;
 
-            UpdateRecommendations(selectedCategoryCount, totalEvents);
+            //UpdateRecommendations(selectedCategoryCount, totalEvents);
+            UpdatePieChart(); // Update the pie chart whenever category progress is updated
         }
 
-        private void UpdateRecommendations(int selectedCount, int totalCount)
+        private void UpdatePieChart()
         {
-            listViewRecommendations.Items.Clear();
-            if (totalCount == 0) return;
+            // Clear the previous series data
+            pieChart.Series["Event Categories"].Points.Clear();
 
-            // Example recommendations based on percentage
-            if (selectedCount == 0)
+            // Group events by category and count them
+            var categoryCounts = listViewEvents.Items.Cast<ListViewItem>()
+                .GroupBy(item => item.SubItems[2].Text) // Group by category
+                .Select(g => new { Category = g.Key, Count = g.Count() })
+                .ToList();
+
+            // Add data points to the pie chart
+            foreach (var category in categoryCounts)
             {
-                listViewRecommendations.Items.Add(new ListViewItem("No events in this category"));
-            }
-            else if (selectedCount > totalCount / 2) // More than 50%
-            {
-                listViewRecommendations.Items.Add(new ListViewItem("Highly recommended: Participate!"));
-            }
-            else
-            {
-                listViewRecommendations.Items.Add(new ListViewItem("Consider joining events in this category."));
+                pieChart.Series["Event Categories"].Points.AddXY(category.Category, category.Count);
             }
         }
 
@@ -263,3 +282,4 @@ namespace MunicipalServicesApp
         private System.Windows.Forms.ListView listViewRecommendations;
     }
 }
+

@@ -8,6 +8,7 @@ namespace MunicipalServicesApp
     public partial class MainForm : Form
     {
         private List<Issue> issues = new List<Issue>();
+        private List<ServiceRequest> serviceRequests = new List<ServiceRequest>(); // List to hold service requests
         private Button btnExit;
 
         public MainForm()
@@ -54,7 +55,12 @@ namespace MunicipalServicesApp
 
         private void btnServiceRequestStatus_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Service Request Status feature is currently unavailable.", "Feature Disabled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Pass the serviceRequests list to the ServiceRequestStatusForm
+            var serviceRequestStatusForm = new ServiceRequestStatusForm(serviceRequests)
+            {
+                Owner = this // Optional, to set MainForm as the owner
+            };
+            LoadForm(serviceRequestStatusForm);
         }
 
         private void btnViewIssues_Click(object sender, EventArgs e)
@@ -81,6 +87,11 @@ namespace MunicipalServicesApp
         private void MainForm_Load(object sender, EventArgs e)
         {
             lblWelcome.Text = "Welcome to the Municipal Services App";
+
+            // Example: Adding service requests to the list (replace with real data as needed)
+            serviceRequests.Add(new ServiceRequest(1, "Fix Water Pipe", "Pending", DateTime.Now));
+            serviceRequests.Add(new ServiceRequest(2, "Repair Streetlight", "In Progress", DateTime.Now.AddDays(1)));
+            serviceRequests.Add(new ServiceRequest(3, "Clean Park", "Completed", DateTime.Now.AddDays(2)));
         }
 
         private void btnExit_Click(object sender, EventArgs e)
